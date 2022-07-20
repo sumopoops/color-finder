@@ -1,29 +1,44 @@
 #include "raylib.h"
 #include <stdio.h>
 #include <stdlib.h>
-#define MAX_COLORS 5
+
+
 
 //---------------------------------------------------------------------------------------- GLOBALS
 
-Color colors[MAX_COLORS];
+#define MAX_COLORS 5
 
 
 
-//---------------------------------------------------------------------------------------- FUNCTIONS
+//---------------------------------------------------------------------------------------- STRUCTS
+
+typedef struct PaletteColor {
+    Color color;
+    bool locked;
+} PaletteColor;
+
+
+
+//---------------------------------------------------------------------------------------- FUNCTIONS / PROTOTYPES
 
 void GeneratePallate() {
     // Empty
 }
 
-void GenerateRandomPallate() {
-    for (int i=0; i<5; i++) {
-        colors[i].a = 255;
-        colors[i].r = GetRandomValue(0, 255);
-        colors[i].g = GetRandomValue(0, 255);
-        colors[i].b = GetRandomValue(0, 255);
-    }
+PaletteColor GenerateRandomColor(PaletteColor palCol) {
+    if (palCol.locked) return palCol;
+    palCol.color.a = 255;
+    palCol.color.r = GetRandomValue(0, 255);
+    palCol.color.g = GetRandomValue(0, 255);
+    palCol.color.b = GetRandomValue(0, 255);
+    return palCol;
 }
 
+void RandomizeColors(PaletteColor arrayOfColors[]) {
+    for (int i=0; i<MAX_COLORS; i++) {
+        arrayOfColors[i] = GenerateRandomColor(arrayOfColors[i]);
+    }
+}
 
 
 //---------------------------------------------------------------------------------------- MAIN
@@ -33,15 +48,13 @@ int main() {
     // Vars
     int windowWidth = 1000;
     int windowHeight = 400;
-    //int colorCount = 5;
-    char** colorNames = malloc(6);
 
-    // Temp
-    for (int i=0; i<5; i++) colors[i] = (Color){i*50, i*50, i*50, 255};
-    colorNames[0] = "HHHHH";
-    colorNames[1] = "HHHHH";
-    colorNames[2] = "HHHHH";
-    printf("colorName[0] = %s, colorName[1] = %s\n\n", colorNames[0], colorNames[1]);
+    // Init colors array
+    PaletteColor colors[5];
+    for (int i=0; i<MAX_COLORS; i++) {
+        colors[i].color = (Color){40*i, 40*i, 40*i, 255};
+        colors[i].locked = false;
+    }
 
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
     InitWindow(windowWidth, windowHeight, "Color Finder");
@@ -53,9 +66,12 @@ int main() {
         windowWidth = GetScreenWidth();
         windowHeight = GetScreenHeight();
 
+        // Debug
+        for (int i=0; i<MAX_COLORS; i++) printf("COLOR %d R: %d\n\n", i, colors[i].color.r);
+
         // Keyboard input
         if (IsKeyPressed(KEY_SPACE)) {
-            GenerateRandomPallate();
+            RandomizeColors(colors);
         }
 
         BeginDrawing();
@@ -64,7 +80,7 @@ int main() {
 
             // Draw colors
             for (int i=0; i<5; i++)
-            DrawRectangle(i*(windowWidth/5), 0, (windowWidth/5), (windowHeight), colors[i]);
+            DrawRectangle(i*(windowWidth/5), 0, (windowWidth/5)+10, (windowHeight), colors[i].color);
 
         EndDrawing();
     }
