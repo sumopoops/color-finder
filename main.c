@@ -1,12 +1,5 @@
 #include "raylib.h"
-#include <stdio.h>
-#include <stdlib.h>
-
-
-
-//---------------------------------------------------------------------------------------- GLOBALS
-
-#define MAX_COLORS 5
+#define MAX_COLORS 4
 
 
 
@@ -20,10 +13,6 @@ typedef struct PaletteColor {
 
 
 //---------------------------------------------------------------------------------------- FUNCTIONS / PROTOTYPES
-
-void GeneratePallate() {
-    // Empty
-}
 
 PaletteColor GenerateRandomColor(PaletteColor palCol) {
     if (palCol.locked) return palCol;
@@ -41,33 +30,32 @@ void RandomizeColors(PaletteColor arrayOfColors[]) {
 }
 
 
+
 //---------------------------------------------------------------------------------------- MAIN
 
 int main() {
 
     // Vars
-    int windowWidth = 1000;
-    int windowHeight = 400;
+    int windowW = 1000;
+    int windowH = 400;
 
     // Init colors array
-    PaletteColor colors[5];
+    PaletteColor colors[MAX_COLORS];
     for (int i=0; i<MAX_COLORS; i++) {
         colors[i].color = (Color){40*i, 40*i, 40*i, 255};
         colors[i].locked = false;
     }
+    colors[1].locked = true; //TEMP
 
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-    InitWindow(windowWidth, windowHeight, "Color Finder");
+    InitWindow(windowW, windowH, "Color Finder");
     SetTargetFPS(60);
 
     while (!WindowShouldClose()) {
 
         // Update
-        windowWidth = GetScreenWidth();
-        windowHeight = GetScreenHeight();
-
-        // Debug
-        for (int i=0; i<MAX_COLORS; i++) printf("COLOR %d R: %d\n\n", i, colors[i].color.r);
+        windowW = GetScreenWidth();
+        windowH = GetScreenHeight();
 
         // Keyboard input
         if (IsKeyPressed(KEY_SPACE)) {
@@ -79,8 +67,8 @@ int main() {
             ClearBackground(WHITE);
 
             // Draw colors
-            for (int i=0; i<5; i++)
-            DrawRectangle(i*(windowWidth/5), 0, (windowWidth/5)+10, (windowHeight), colors[i].color);
+            for (int i=0; i<MAX_COLORS; i++)
+            DrawRectangle(i*(windowW/MAX_COLORS), 0, (windowW/MAX_COLORS)+10, (windowH), colors[i].color);
 
         EndDrawing();
     }
