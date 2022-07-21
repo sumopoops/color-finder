@@ -1,5 +1,6 @@
 //════════════════════════════════════════════════════════════ IDEAS 
-
+Start working on color locking system
+Create re-usable button script
 
 //════════════════════════════════════════════════════════════ DOING
 
