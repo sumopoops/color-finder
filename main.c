@@ -1,5 +1,5 @@
 #include "raylib.h"
-#define MAX_COLORS 4
+int MAX_COLORS = 6;
 
 
 
@@ -51,6 +51,10 @@ int main() {
     InitWindow(windowW, windowH, "Color Finder");
     SetTargetFPS(60);
 
+    // Textures
+    Texture2D TEX_lock_closed = LoadTexture("img/lock_closed.png");
+    Texture2D TEX_lock_open = LoadTexture("img/lock_open.png");
+    
     while (!WindowShouldClose()) {
 
         // Update
@@ -60,6 +64,10 @@ int main() {
         // Keyboard input
         if (IsKeyPressed(KEY_SPACE)) {
             RandomizeColors(colors);
+        } else if (IsKeyPressed(KEY_UP)) {
+            MAX_COLORS++;
+        } else if (IsKeyPressed(KEY_DOWN)) {
+            MAX_COLORS--;
         }
 
         BeginDrawing();
@@ -69,6 +77,15 @@ int main() {
             // Draw colors
             for (int i=0; i<MAX_COLORS; i++)
             DrawRectangle(i*(windowW/MAX_COLORS), 0, (windowW/MAX_COLORS)+10, (windowH), colors[i].color);
+
+            // Draw Icons
+            for (int i=0; i<MAX_COLORS; i++) {
+                int iconX = ((i*(windowW/MAX_COLORS)) + ((windowW/MAX_COLORS)*0.5)) - TEX_lock_closed.width*0.5;
+                (colors[i].locked) ?
+                DrawTexture(TEX_lock_closed, iconX, windowH-100, WHITE) :
+                DrawTexture(TEX_lock_open, iconX, windowH-100, WHITE);
+                
+            }
 
         EndDrawing();
     }
